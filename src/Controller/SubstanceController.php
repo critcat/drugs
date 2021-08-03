@@ -3,6 +3,7 @@
 namespace App\Controller;
 
 use App\Entity\Substance;
+use App\Repository\SubstanceRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
@@ -14,6 +15,16 @@ use Symfony\Component\Routing\Annotation\Route;
  */
 class SubstanceController extends AbstractController
 {
+    /**
+     * @Route("/list")
+     * @param SubstanceRepository $substanceRepository
+     */
+    public function list(SubstanceRepository $substanceRepository)
+    {
+        $data = $substanceRepository->findAll();
+        dd($data);
+    }
+
     /**
      * @Route("/new", name="substance_new")
      */

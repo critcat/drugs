@@ -2,13 +2,27 @@
 
 namespace App\Entity;
 
+use ApiPlatform\Core\Action\NotFoundAction;
+use ApiPlatform\Core\Annotation\ApiResource;
 use App\Repository\ManufacturerRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Serializer\Annotation\Groups;
+use Symfony\Component\Validator\Constraints as Assert;
 
 /**
  * @ORM\Entity(repositoryClass=ManufacturerRepository::class)
+ * @ApiResource(
+ *     collectionOperations={"get"},
+ *     itemOperations={"get"={
+ *          "controller"=NotFoundAction::class,
+ *          "read"=false,
+ *          "output"=false
+ *     }},
+ *     normalizationContext={"groups"={"manufacturer:read"}},
+ *     order={"name"="ASC"}
+ * )
  */
 class Manufacturer
 {
@@ -21,11 +35,15 @@ class Manufacturer
 
     /**
      * @ORM\Column(type="string", length=255)
+     * @Groups({"manufacturer:read", "drugs:read"})
+     * @Assert\NotBlank()
      */
     private $name;
 
     /**
      * @ORM\Column(type="string", length=255)
+     * @Groups({"manufacturer:read", "drugs:read"})
+     * @Assert\NotBlank()
      */
     private $site;
 
