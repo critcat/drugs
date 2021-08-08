@@ -1,0 +1,7 @@
+monolog:
+    channels: ["drugs_changes"]
+    handlers:
+        custom:
+            type: stream
+            path: "%kernel.logs_dir%/drugs_changes.log"
+            channels: ["drugs_changes"]
