@@ -3,11 +3,12 @@
 {% block title %}Каталог лекарственных средств{% endblock %}
 
 {% block body %}
-    <div class="row">
-        <ul>
-            <li><a href="{{ path('drug_list') }}">Лекарственные препараты</a></li>
-            <li><a href="{{ path('manufacturer_list') }}">Производители</a></li>
-            <li><a href="{{ path('substance_list') }}">Действующие вещества</a></li>
-        </ul>
+    <div class="flow-row">
+        {% if app.session.get('token') %}
+            <h1>Бобро пожаловать в мир вкуснейших лекарств!</h1>
+        {% else %}
+            Вы не авторизованы и не можете пользоваться каталогом.<br>
+            Пожалуйста, <a href="{{ path('auth') }}">пройдите авторизацию</a> и покажите доктору электронное направление с мокрой печатью.
+        {% endif %}
     </div>
 {% endblock %}

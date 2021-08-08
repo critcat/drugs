@@ -6,6 +6,7 @@ use App\Service\ApiRequester;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpFoundation\Session\SessionInterface;
 use Symfony\Component\Routing\Annotation\Route;
 
 /**
@@ -38,7 +39,7 @@ class DrugController extends AbstractController
      */
     public function new(Request $request)
     {
-        if ($request->getMethod() === 'POST') {
+        if ($request->isMethod('POST')) {
             return $this->insertItem($request);
         }
 
@@ -64,6 +65,8 @@ class DrugController extends AbstractController
             '/api/drugs/' . $id
         );
 
+        $this->addFlash('success', 'Запись успешно удалена');
+
         return $this->redirectToRoute('drug_list');
     }
 
@@ -72,7 +75,7 @@ class DrugController extends AbstractController
      */
     public function edit($id, Request $request)
     {
-        if ($request->getMethod() === 'POST') {
+        if ($request->isMethod('POST')) {
             return $this->updateItem($id, $request);
         }
 

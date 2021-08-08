@@ -3,19 +3,23 @@
 namespace App\Service;
 
 use Symfony\Component\HttpFoundation\Exception\BadRequestException;
+use Symfony\Component\HttpFoundation\Session\SessionInterface;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Component\Security\Core\Exception\AuthenticationException;
 use Symfony\Contracts\HttpClient\HttpClientInterface;
+use Symfony\Contracts\HttpClient\ResponseInterface;
 
 class ApiRequester
 {
     private HttpClientInterface $httpClient;
     private string $apiUrl;
+    private SessionInterface $session;
 
-    public function __construct(HttpClientInterface $httpClient, string $apiUrl)
+    public function __construct(HttpClientInterface $httpClient, SessionInterface $session, string $apiUrl)
     {
         $this->httpClient = $httpClient;
         $this->apiUrl = trim($apiUrl, '/');
+        $this->session = $session;
     }
 
     public function request(string $method, string $uri, $body = null)
@@ -26,6 +30,7 @@ class ApiRequester
             [
                 'headers' => [
                     'Content-Type' => 'application/ld+json',
+                    'Authorization' => 'Bearer ' . $this->session->get('token'),
                 ],
                 'body' => $body
                     ? (is_array($body)
@@ -35,22 +40,38 @@ class ApiRequester
             ]
         );
 
+        $this->processError($response);
+
+        return $response;
+    }
+
+    private function processError(ResponseInterface $response)
+    {
         $statusCode = $response->getStatusCode();
-        if ($statusCode !== 200) {
-            $content = json_decode($response->getContent(false), true);
-            dump($content);
-            switch ($statusCode) {
-                case 400:
-                    throw new BadRequestException($content['hydra:description']);
-                case 401:
-                    throw new AuthenticationException($content['message']);
-                case 404:
-                    throw new NotFoundHttpException($content['hydra:description']);
-                case 422:
-                    throw new \Exception($content['hydra:description'], 422);
+        if ($statusCode == 200) {
+            return;
+        }
+
+        $content = json_decode($response->getContent(false), true);
+
+        $message = 'Произошла ошибка запроса к API';
+        if (is_array($content)) {
+            if (array_key_exists('hydra:description', $content)) {
+                $message = $content['hydra:description'];
+            } elseif (array_key_exists('message', $content)) {
+                $message = $content['message'];
             }
         }
 
-        return $response;
+        switch ($statusCode) {
+            case 400:
+                throw new BadRequestException($message);
+            case 401:
+                throw new AuthenticationException($message, 401);
+            case 404:
+                throw new NotFoundHttpException($message);
+            case 422:
+                throw new \Exception($message, 422);
+        }
     }
 }
