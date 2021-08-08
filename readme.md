@@ -11,7 +11,7 @@
 ---------
 Скачайте исходный код
 ```
-git clone https://github.com/critcat/drugs.git
+$ git clone https://github.com/critcat/drugs.git
 ```
 Перейдите в папку drugs
 ```
