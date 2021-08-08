@@ -4,34 +4,27 @@
 
 Требования
 ----------
-1. [composer](https://getcomposer.org)
-2. [docker](https://www.docker.com/)
-3. [git](https://git-scm.com/) (опционально)
+1. [docker](https://www.docker.com/)
+2. [git](https://git-scm.com/)
 
 Установка
 ---------
 Скачайте исходный код
-+ если у вас установлен git, выполните команду
-    ```
-    git clone ...
-    ```
-+ либо скачайте и разверните zip-архив
-
+```
+git clone https://github.com/critcat/drugs.git
+```
 Перейдите в папку drugs
 ```
 $ cd drugs
 ```
-
 Запустите Docker-контейнер
 ```
 $ docker-compose up -d
 ```
-
 Запустите веб-сервер в Docker-контейнере 
 ```
 $ docker exec php-fpm symfony serve -d
 ```
-
 Примените миграции для создания БД и таблиц 
 ```
 $ docker exec php-fpm bin/console doctrine:migrations:migrate -n
@@ -57,4 +50,4 @@ $ docker exec php-fpm php bin/console doctrine:fixtures:load -n
     ```
 + Вариант 2
     
-    Откройте в браузере адрес [http://127.0.0.1:5000](http://127.0.0.1:5000) и авторизуйтесь, используя имя пользователя `username` и пароль `password` 
+    Откройте в браузере адрес [http://127.0.0.1:5000](http://127.0.0.1:5000) и авторизуйтесь, используя имя пользователя `user` и пароль `password` 
