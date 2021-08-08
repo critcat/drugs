@@ -2,44 +2,22 @@
 
 namespace App\Controller;
 
-use App\Entity\Substance;
-use App\Repository\SubstanceRepository;
-use Doctrine\ORM\EntityManagerInterface;
+use App\Service\ApiRequester;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
-use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 
-/**
- * Class SubstanceController
- * @Route("/substance")
- */
 class SubstanceController extends AbstractController
 {
     /**
-     * @Route("/list")
-     * @param SubstanceRepository $substanceRepository
+     * @Route("/substance", name="substance_list")
      */
-    public function list(SubstanceRepository $substanceRepository)
+    public function list(ApiRequester $apiRequester)
     {
-        $data = $substanceRepository->findAll();
-        dd($data);
-    }
+        $response = $apiRequester->request('GET', '/api/substances');
+        $content = $response->toArray();
 
-    /**
-     * @Route("/new", name="substance_new")
-     */
-    public function new(EntityManagerInterface $em): Response
-    {
-        $substance = new Substance();
-        $substance->setName('Cocaine');
-
-        $em->persist($substance);
-        $em->flush();
-
-        return new Response(sprintf(
-            'Well hallo! The shiny new substance is id #%d, name: %s',
-            $substance->getId(),
-            $substance->getName()
-        ));
+        return $this->render('substance_list.html.twig', [
+            'substances' => $content['hydra:member']
+        ]);
     }
 }

@@ -1,0 +1,20 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Производители - Каталог лекарственных средств{% endblock %}
+
+{% block body %}
+    <div class="flex-row">
+        <h1>Производители</h1>
+    </div>
+    <div class="flex-row">
+        <ul class="list-group">
+            {% for manufacturer in manufacturers %}
+                <li class="list-group-item">
+                    <a href="{{ manufacturer.site }}"
+                       target="_blank" title="открыть сайт производителя">{{ manufacturer.name }}</a>
+                </li>
+            {% endfor %}
+        </ul>
+    </div>
+{% endblock %}
+

@@ -1,0 +1,13 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Каталог лекарственных средств{% endblock %}
+
+{% block body %}
+    <div class="row">
+        <ul>
+            <li><a href="{{ path('drug_list') }}">Лекарственные препараты</a></li>
+            <li><a href="{{ path('manufacturer_list') }}">Производители</a></li>
+            <li><a href="{{ path('substance_list') }}">Действующие вещества</a></li>
+        </ul>
+    </div>
+{% endblock %}

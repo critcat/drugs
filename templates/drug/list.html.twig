@@ -1,0 +1,42 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Лекарства - Каталог лекарственных средств{% endblock %}
+
+{% block body %}
+    <div class="d-flex flex-row">
+        <div class="flex-grow-1">
+            <h1>Лекарственные препараты</h1>
+        </div>
+        <div>
+            <a href="{{ path('drug_new') }}" class="btn btn-primary">Добавить</a>
+        </div>
+    </div>
+    <div class="flex-row">
+        <table class="table table-striped">
+            <tr>
+                <th>Название</th>
+                <th>Действующее в-во</th>
+                <th>Производитель</th>
+                <th>Цена</th>
+                <th>&nbsp;</th>
+            </tr>
+            {% for drug in drugs %}
+                <tr>
+                    <td>{{ drug.name }}</td>
+                    <td>{{ drug.substance.name }}</td>
+                    <td>{{ drug.manufacturer.name }}</td>
+                    <td>{{ drug.price }}</td>
+                    <td style="font-size: 120%">
+                        {% set at_id = attribute(drug, '@id')|split('/') %}
+                        {% set id = at_id[at_id|length - 1] %}
+
+                        <a href="{{ path('drug_edit', {id: id}) }}"
+                           title="редактировать"><i class="fa fa-pencil-square-o"></i></a>
+                        <a href="{{ path('drug_delete', {id: id}) }}"
+                           title="удалить"><i class="fa fa-trash-o"></i></a>
+                    </td>
+                </tr>
+            {% endfor %}
+        </table>
+    </div>
+{% endblock %}

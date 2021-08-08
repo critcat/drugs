@@ -1,0 +1,17 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Действующие вещества - Каталог лекарственных средств{% endblock %}
+
+{% block body %}
+    <div class="flex-row">
+        <h1>Действующие вещества</h1>
+    </div>
+    <div class="flex-row">
+        <ul class="list-group">
+            {% for substance in substances %}
+                <li class="list-group-item">{{ substance.name }}</li>
+            {% endfor %}
+        </ul>
+    </div>
+{% endblock %}
+

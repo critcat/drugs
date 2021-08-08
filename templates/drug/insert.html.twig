@@ -1,0 +1,43 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Лекарства - Каталог лекарственных средств{% endblock %}
+
+{% block body %}
+    <h1>Добавление препарата</h1>
+    <form method="post">
+        <div class="form-group">
+            <label for="name">Название</label>
+            <input type="text" name="name" id="name" class="form-control" required>
+        </div>
+
+        <div class="form-group">
+            <label for="price">Цена</label>
+            <input type="number" name="price" id="price" step=".01" class="form-control" required>
+        </div>
+
+        <div class="form-group">
+            <label for="substance">Действующее вещество</label>
+            <select name="substance" id="substance" class="form-control">
+                {% for substance in substances %}
+                    <option value="{{ attribute(substance, '@id') }}">
+                        {{ substance.name }}
+                    </option>
+                {% endfor %}
+            </select>
+        </div>
+
+        <div class="form-group">
+            <label for="manufacturer">Производитель</label>
+            <select name="manufacturer" id="manufacturer" class="form-control">
+                {% for manufacturer in manufacturers %}
+                    <option value="{{ attribute(manufacturer, '@id') }}">
+                        {{ manufacturer.name }}
+                    </option>
+                {% endfor %}
+            </select>
+        </div>
+
+        <button type="submit" class="btn btn-success">Сохранить</button>
+        <a href="{{ path('drug_list') }}" class="btn btn-dark">Отмена</a>
+    </form>
+{% endblock %}
