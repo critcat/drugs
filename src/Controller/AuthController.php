@@ -21,16 +21,7 @@ class AuthController extends AbstractController
                 $username = $request->request->get('username');
                 $password = $request->request->get('password');
 
-                $response = $apiRequester->request(
-                    'POST',
-                    '/api/login_check',
-                    json_encode([
-                        'username' => $username,
-                        'password' => $password,
-                    ])
-                );
-
-                $token = $response->toArray()['token'];
+                $token = $apiRequester->login($username, $password);
 
                 $session->set('token', $token);
 

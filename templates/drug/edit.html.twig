@@ -7,20 +7,20 @@
     <form method="post">
         <div class="form-group">
             <label for="name">Название</label>
-            <input type="text" name="name" id="name" value="{{ drug.name }}" class="form-control" required>
+            <input type="text" name="name" id="name" value="{{ data.drug.name }}" class="form-control" required>
         </div>
 
         <div class="form-group">
             <label for="price">Цена</label>
-            <input type="number" name="price" id="price" value="{{ drug.price }}" step=".01" class="form-control" required>
+            <input type="number" name="price" id="price" value="{{ data.drug.price }}" step=".01" class="form-control" required>
         </div>
 
         <div class="form-group">
             <label for="substance">Действующее вещество</label>
             <select name="substance" id="substance" class="form-control">
-                {% for substance in substances %}
+                {% for substance in data.substances %}
                     <option value="{{ attribute(substance, '@id') }}"
-                            {% if attribute(substance, '@id') == attribute(drug.substance, '@id') %} selected{% endif %}>
+                            {% if attribute(substance, '@id') == attribute(data.drug.substance, '@id') %} selected{% endif %}>
                         {{ substance.name }}
                     </option>
                 {% endfor %}
@@ -30,9 +30,9 @@
         <div class="form-group">
             <label for="manufacturer">Производитель</label>
             <select name="manufacturer" id="manufacturer" class="form-control">
-                {% for manufacturer in manufacturers %}
+                {% for manufacturer in data.manufacturers %}
                     <option value="{{ attribute(manufacturer, '@id') }}"
-                            {% if attribute(manufacturer, '@id') == attribute(drug.manufacturer, '@id') %} selected{% endif %}>
+                            {% if attribute(manufacturer, '@id') == attribute(data.drug.manufacturer, '@id') %} selected{% endif %}>
                         {{ manufacturer.name }}
                     </option>
                 {% endfor %}

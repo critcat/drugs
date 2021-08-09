@@ -13,11 +13,10 @@ class SubstanceController extends AbstractController
      */
     public function list(ApiRequester $apiRequester)
     {
-        $response = $apiRequester->request('GET', '/api/substances');
-        $content = $response->toArray();
+        $substances = $apiRequester->getSubstances();
 
         return $this->render('substance_list.html.twig', [
-            'substances' => $content['hydra:member']
+            'substances' => $substances,
         ]);
     }
 }

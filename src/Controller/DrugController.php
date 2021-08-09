@@ -6,7 +6,6 @@ use App\Service\ApiRequester;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\HttpFoundation\Session\SessionInterface;
 use Symfony\Component\Routing\Annotation\Route;
 
 /**
@@ -26,11 +25,10 @@ class DrugController extends AbstractController
      */
     public function index(): Response
     {
-        $response = $this->apiRequester->request('GET', '/api/drugs');
-        $content = $response->toArray();
+        $drugs = $this->apiRequester->getDrugs();
 
         return $this->render('drug/list.html.twig', [
-            'drugs' => $content['hydra:member'],
+            'drugs' => $drugs,
         ]);
     }
 
@@ -40,18 +38,15 @@ class DrugController extends AbstractController
     public function new(Request $request)
     {
         if ($request->isMethod('POST')) {
-            return $this->insertItem($request);
+            $this->apiRequester->insertDrug($request);
+
+            return $this->redirectToRoute('drug_list');
         }
 
-        $response = $this->apiRequester->request('GET', '/api/manufacturers');
-        $manufacturers = $response->toArray()['hydra:member'];
-
-        $response = $this->apiRequester->request('GET', '/api/substances');
-        $substances = $response->toArray()['hydra:member'];
+        $data = $this->apiRequester->getDataForDrugInsertion();
 
         return $this->render('drug/insert.html.twig', [
-            'manufacturers' => $manufacturers,
-            'substances' => $substances,
+            'data' => $data,
         ]);
     }
 
@@ -60,11 +55,7 @@ class DrugController extends AbstractController
      */
     public function delete($id)
     {
-        $this->apiRequester->request(
-            'DELETE',
-            '/api/drugs/' . $id
-        );
-
+        $this->apiRequester->deleteDrug($id);
         $this->addFlash('success', 'Запись успешно удалена');
 
         return $this->redirectToRoute('drug_list');
@@ -76,63 +67,15 @@ class DrugController extends AbstractController
     public function edit($id, Request $request)
     {
         if ($request->isMethod('POST')) {
-            return $this->updateItem($id, $request);
+            $this->apiRequester->updateDrug($id, $request);
+
+            return $this->redirectToRoute('drug_list');
         }
 
-        return $this->getItem($id);
-    }
-
-    private function getItem(int $id)
-    {
-        $response = $this->apiRequester->request('GET','/api/drugs/' . $id);
-        $drugs = $response->toArray();
-
-        $response = $this->apiRequester->request('GET', '/api/manufacturers');
-        $manufacturers = $response->toArray()['hydra:member'];
-
-        $response = $this->apiRequester->request('GET', '/api/substances');
-        $substances = $response->toArray()['hydra:member'];
+        $data = $this->apiRequester->getDataForDrugUpdate($id);
 
         return $this->render('drug/edit.html.twig', [
-            'drug' => $drugs,
-            'manufacturers' => $manufacturers,
-            'substances' => $substances,
+            'data' => $data,
         ]);
-    }
-
-    private function updateItem(int $id, Request $request)
-    {
-        $body = [
-            'name' => $request->request->get('name'),
-            'price' => floatval($request->request->get('price')),
-            'manufacturer' => $request->request->get('manufacturer'),
-            'substance' => $request->request->get('substance'),
-        ];
-
-        $this->apiRequester->request(
-            'PUT',
-            '/api/drugs/' . $id,
-            json_encode($body)
-        );
-
-        return $this->redirectToRoute('drug_list');
-    }
-
-    private function insertItem(Request $request)
-    {
-        $body = [
-            'name' => $request->request->get('name'),
-            'price' => floatval($request->request->get('price')),
-            'manufacturer' => $request->request->get('manufacturer'),
-            'substance' => $request->request->get('substance'),
-        ];
-
-        $this->apiRequester->request(
-            'POST',
-            '/api/drugs',
-            json_encode($body)
-        );
-
-        return $this->redirectToRoute('drug_list');
     }
 }

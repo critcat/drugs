@@ -14,11 +14,10 @@ class ManufacturerController extends AbstractController
      */
     public function index(ApiRequester $apiRequester): Response
     {
-        $response = $apiRequester->request('GET', '/api/manufacturers');
-        $content = $response->toArray();
+        $manufacturers = $apiRequester->getManufacturers();
 
         return $this->render('manufacturer_list.html.twig', [
-            'manufacturers' => $content['hydra:member'],
+            'manufacturers' => $manufacturers,
         ]);
     }
 }

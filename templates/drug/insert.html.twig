@@ -18,7 +18,7 @@
         <div class="form-group">
             <label for="substance">Действующее вещество</label>
             <select name="substance" id="substance" class="form-control">
-                {% for substance in substances %}
+                {% for substance in data.substances %}
                     <option value="{{ attribute(substance, '@id') }}">
                         {{ substance.name }}
                     </option>
@@ -29,7 +29,7 @@
         <div class="form-group">
             <label for="manufacturer">Производитель</label>
             <select name="manufacturer" id="manufacturer" class="form-control">
-                {% for manufacturer in manufacturers %}
+                {% for manufacturer in data.manufacturers %}
                     <option value="{{ attribute(manufacturer, '@id') }}">
                         {{ manufacturer.name }}
                     </option>

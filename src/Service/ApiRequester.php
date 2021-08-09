@@ -3,6 +3,7 @@
 namespace App\Service;
 
 use Symfony\Component\HttpFoundation\Exception\BadRequestException;
+use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Session\SessionInterface;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Component\Security\Core\Exception\AuthenticationException;
@@ -20,6 +21,105 @@ class ApiRequester
         $this->httpClient = $httpClient;
         $this->apiUrl = trim($apiUrl, '/');
         $this->session = $session;
+    }
+
+    public function getManufacturers(): array
+    {
+        $response = $this->request('GET', '/api/manufacturers');
+
+        return $response->toArray()['hydra:member'];
+    }
+
+    public function getSubstances(): array
+    {
+        $response = $this->request('GET', '/api/substances');
+
+        return $response->toArray()['hydra:member'];
+    }
+
+    public function getDrugs(): array
+    {
+        $response = $this->request('GET', '/api/drugs');
+
+        return $response->toArray()['hydra:member'];
+    }
+
+    public function getDrug(int $id): array
+    {
+        $response = $this->request('GET','/api/drugs/' . $id);
+
+        return $response->toArray();
+    }
+
+    public function getDataForDrugInsertion() : array
+    {
+        return [
+            'manufacturers' => $this->getManufacturers(),
+            'substances' => $this->getSubstances(),
+        ];
+    }
+
+    public function insertDrug(Request $request): void
+    {
+        $body = [
+            'name' => $request->request->get('name'),
+            'price' => floatval($request->request->get('price')),
+            'manufacturer' => $request->request->get('manufacturer'),
+            'substance' => $request->request->get('substance'),
+        ];
+
+        $this->request(
+            'POST',
+            '/api/drugs',
+            json_encode($body)
+        );
+    }
+
+    public function getDataForDrugUpdate(int $id): array
+    {
+        return [
+            'drug' => $this->getDrug($id),
+            'manufacturers' => $this->getManufacturers(),
+            'substances' => $this->getSubstances(),
+        ];
+    }
+
+    public function updateDrug(int $id, Request $request): void
+    {
+        $body = [
+            'name' => $request->request->get('name'),
+            'price' => floatval($request->request->get('price')),
+            'manufacturer' => $request->request->get('manufacturer'),
+            'substance' => $request->request->get('substance'),
+        ];
+
+        $this->request(
+            'PUT',
+            '/api/drugs/' . $id,
+            json_encode($body)
+        );
+    }
+
+    public function deleteDrug(int $id): void
+    {
+        $this->request(
+            'DELETE',
+            '/api/drugs/' . $id
+        );
+    }
+
+    public function login(string $username, string $password)
+    {
+        $response = $this->request(
+            'POST',
+            '/api/login_check',
+            json_encode([
+                'username' => $username,
+                'password' => $password,
+            ])
+        );
+
+        return $response->toArray()['token'];
     }
 
     public function request(string $method, string $uri, $body = null)
