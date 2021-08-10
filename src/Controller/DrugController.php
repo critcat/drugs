@@ -33,21 +33,25 @@ class DrugController extends AbstractController
     }
 
     /**
-     * @Route("/new", name="drug_new")
+     * @Route("/new", name="drug_new", methods={"GET"})
      */
-    public function new(Request $request)
+    public function new()
     {
-        if ($request->isMethod('POST')) {
-            $this->apiRequester->insertDrug($request);
-
-            return $this->redirectToRoute('drug_list');
-        }
-
         $data = $this->apiRequester->getDataForDrugInsertion();
 
         return $this->render('drug/insert.html.twig', [
             'data' => $data,
         ]);
+    }
+
+    /**
+     * @Route("/new", name="drug_insert", methods={"POST"})
+     */
+    public function insert(Request $request)
+    {
+        $this->apiRequester->insertDrug($request);
+
+        return $this->redirectToRoute('drug_list');
     }
 
     /**
@@ -62,20 +66,25 @@ class DrugController extends AbstractController
     }
 
     /**
-     * @Route("/{id}", name="drug_edit")
+     * @Route("/{id}", name="drug_edit", methods={"GET"})
      */
-    public function edit($id, Request $request)
+    public function edit($id)
     {
-        if ($request->isMethod('POST')) {
-            $this->apiRequester->updateDrug($id, $request);
-
-            return $this->redirectToRoute('drug_list');
-        }
-
         $data = $this->apiRequester->getDataForDrugUpdate($id);
 
         return $this->render('drug/edit.html.twig', [
+            'id' => $id,
             'data' => $data,
         ]);
+    }
+
+    /**
+     * @Route("/{id}", name="drug_update", methods={"POST"})
+     */
+    public function update($id, Request $request)
+    {
+        $this->apiRequester->updateDrug($id, $request);
+
+        return $this->redirectToRoute('drug_list');
     }
 }

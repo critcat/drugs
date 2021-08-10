@@ -4,7 +4,7 @@
 
 {% block body %}
     <h1>Редактирование препарата</h1>
-    <form method="post">
+    <form method="post" action="{{ path('drug_update', {id: id}) }}">
         <div class="form-group">
             <label for="name">Название</label>
             <input type="text" name="name" id="name" value="{{ data.drug.name }}" class="form-control" required>
