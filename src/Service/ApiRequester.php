@@ -12,9 +12,9 @@ use Symfony\Contracts\HttpClient\ResponseInterface;
 
 class ApiRequester
 {
-    private $httpClient;
-    private $apiUrl;
-    private $session;
+    private HttpClientInterface $httpClient;
+    private string $apiUrl;
+    private SessionInterface $session;
 
     public function __construct(HttpClientInterface $httpClient, SessionInterface $session, string $apiUrl)
     {
@@ -114,30 +114,17 @@ class ApiRequester
         $this->processResponse($response, 204);
     }
 
-    public function login(string $username, string $password)
+    public function request(string $method, string $uri, $body = null)
     {
-        $response = $this->request(
-            'POST',
-            '/api/login_check',
-            json_encode([
-                'username' => $username,
-                'password' => $password,
-            ])
-        );
-        $this->processResponse($response);
+        $token = $this->session->get('token');
 
-        return $response->toArray()['token'];
-    }
-
-    private function request(string $method, string $uri, $body = null)
-    {
         return $this->httpClient->request(
             strtoupper($method),
             $this->apiUrl . $uri,
             [
                 'headers' => [
                     'Content-Type' => 'application/ld+json',
-                    'Authorization' => 'Bearer ' . $this->session->get('token'),
+                    'Authorization' => 'Bearer ' . $token,
                 ],
                 'body' => $body
                     ? (is_array($body)
@@ -148,7 +135,7 @@ class ApiRequester
         );
     }
 
-    private function processResponse(ResponseInterface $response, $expectedResponseCode = 200)
+    public function processResponse(ResponseInterface $response, $expectedResponseCode = 200)
     {
         $statusCode = $response->getStatusCode();
         if ($statusCode === $expectedResponseCode) {

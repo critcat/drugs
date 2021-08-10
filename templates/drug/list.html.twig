@@ -4,12 +4,7 @@
 
 {% block body %}
     <div class="d-flex flex-row">
-        <div class="flex-grow-1">
-            <h1>Лекарственные препараты</h1>
-        </div>
-        <div>
-            <a href="{{ path('drug_new') }}" class="btn btn-primary">Добавить</a>
-        </div>
+        <h1>Лекарственные препараты</h1>
     </div>
     <div class="flex-row">
         <table class="table table-striped">
@@ -18,7 +13,9 @@
                 <th>Действующее в-во</th>
                 <th>Производитель</th>
                 <th>Цена</th>
-                <th>&nbsp;</th>
+                <th style="width:1%">
+                    <a href="{{ path('drug_new') }}" class="btn btn-primary">Добавить</a>
+                </th>
             </tr>
             {% for drug in drugs %}
                 <tr>
@@ -26,7 +23,7 @@
                     <td>{{ drug.substance.name }}</td>
                     <td>{{ drug.manufacturer.name }}</td>
                     <td>{{ drug.price }}</td>
-                    <td style="font-size: 120%">
+                    <td style="font-size: 120%; text-align: center;">
                         {% set at_id = attribute(drug, '@id')|split('/') %}
                         {% set id = at_id[at_id|length - 1] %}
 

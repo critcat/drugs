@@ -53,7 +53,7 @@ docker exec php-fpm php bin/console lexik:jwt:generate-keypair
     ```
     После этого нужно вставлять полученный токен в запросы к API:
     ```
-    curl -H "Authorization: Bearer [TOKEN]" http://localhost:8000/api/drugs
+    curl -H "Authorization: Bearer [TOKEN]" http://127.0.0.1:5000/api/drugs
     ```
 + Вариант 2
     
