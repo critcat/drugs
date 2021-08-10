@@ -12,9 +12,9 @@ use Symfony\Contracts\HttpClient\ResponseInterface;
 
 class ApiRequester
 {
-    private HttpClientInterface $httpClient;
-    private string $apiUrl;
-    private SessionInterface $session;
+    private $httpClient;
+    private $apiUrl;
+    private $session;
 
     public function __construct(HttpClientInterface $httpClient, SessionInterface $session, string $apiUrl)
     {
@@ -26,6 +26,7 @@ class ApiRequester
     public function getManufacturers(): array
     {
         $response = $this->request('GET', '/api/manufacturers');
+        $this->processResponse($response);
 
         return $response->toArray()['hydra:member'];
     }
@@ -33,6 +34,7 @@ class ApiRequester
     public function getSubstances(): array
     {
         $response = $this->request('GET', '/api/substances');
+        $this->processResponse($response);
 
         return $response->toArray()['hydra:member'];
     }
@@ -40,6 +42,7 @@ class ApiRequester
     public function getDrugs(): array
     {
         $response = $this->request('GET', '/api/drugs');
+        $this->processResponse($response);
 
         return $response->toArray()['hydra:member'];
     }
@@ -47,6 +50,7 @@ class ApiRequester
     public function getDrug(int $id): array
     {
         $response = $this->request('GET','/api/drugs/' . $id);
+        $this->processResponse($response);
 
         return $response->toArray();
     }
@@ -68,11 +72,12 @@ class ApiRequester
             'substance' => $request->request->get('substance'),
         ];
 
-        $this->request(
+        $response = $this->request(
             'POST',
             '/api/drugs',
             json_encode($body)
         );
+        $this->processResponse($response, 201);
     }
 
     public function getDataForDrugUpdate(int $id): array
@@ -102,10 +107,11 @@ class ApiRequester
 
     public function deleteDrug(int $id): void
     {
-        $this->request(
+        $response = $this->request(
             'DELETE',
             '/api/drugs/' . $id
         );
+        $this->processResponse($response, 204);
     }
 
     public function login(string $username, string $password)
@@ -118,13 +124,14 @@ class ApiRequester
                 'password' => $password,
             ])
         );
+        $this->processResponse($response);
 
         return $response->toArray()['token'];
     }
 
-    public function request(string $method, string $uri, $body = null)
+    private function request(string $method, string $uri, $body = null)
     {
-        $response = $this->httpClient->request(
+        return $this->httpClient->request(
             strtoupper($method),
             $this->apiUrl . $uri,
             [
@@ -139,16 +146,12 @@ class ApiRequester
                     : '',
             ]
         );
-
-        $this->processError($response);
-
-        return $response;
     }
 
-    private function processError(ResponseInterface $response)
+    private function processResponse(ResponseInterface $response, $expectedResponseCode = 200)
     {
         $statusCode = $response->getStatusCode();
-        if ($statusCode == 200) {
+        if ($statusCode === $expectedResponseCode) {
             return;
         }
 
@@ -172,6 +175,8 @@ class ApiRequester
                 throw new NotFoundHttpException($message);
             case 422:
                 throw new \Exception($message, 422);
+            default:
+                throw new \Exception($message, 500);
         }
     }
 }

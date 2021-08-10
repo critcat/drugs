@@ -8,8 +8,8 @@ use Symfony\Component\Serializer\SerializerInterface;
 
 class DrugChangesLogger
 {
-    private LoggerInterface $logger;
-    private SerializerInterface $serializer;
+    private $logger;
+    private $serializer;
 
     public function __construct(LoggerInterface $drugsChangesLogger, SerializerInterface $serializer)
     {

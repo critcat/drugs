@@ -11,8 +11,8 @@ use Symfony\Component\Routing\RouterInterface;
 
 class ExceptionSubscriber implements EventSubscriberInterface
 {
-    private RouterInterface $router;
-    private SessionInterface $session;
+    private $router;
+    private $session;
 
     public function __construct(RouterInterface $router, SessionInterface $session)
     {
@@ -23,7 +23,7 @@ class ExceptionSubscriber implements EventSubscriberInterface
     public function onKernelException(ExceptionEvent $event)
     {
         $exception = $event->getThrowable();
-        if ($exception->getCode()) {
+        if ($exception->getCode() === 401) {
             $this->session->getFlashBag()->add('error', $exception->getMessage());
             if ($targetUrl = $event->getRequest()->getUri()) {
                 $this->session->set('target_url', $targetUrl);
