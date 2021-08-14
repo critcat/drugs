@@ -2,26 +2,23 @@
 
 namespace App\Entity;
 
-use ApiPlatform\Core\Action\NotFoundAction;
-use ApiPlatform\Core\Annotation\ApiResource;
 use App\Repository\SubstanceRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
+use OpenApi\Annotations as OA;
 use Symfony\Component\Serializer\Annotation\Groups;
 use Symfony\Component\Validator\Constraints as Assert;
 
 /**
  * @ORM\Entity(repositoryClass=SubstanceRepository::class)
- * @ApiResource(
- *     collectionOperations={"get"},
- *     itemOperations={"get"={
- *          "controller"=NotFoundAction::class,
- *          "read"=false,
- *          "output"=false
- *     }},
- *     normalizationContext={"groups"={"substance:read"}},
- *     order={"name"="ASC"},
+ * @OA\Schema(
+ *     title="Действующее вещество",
+ *     description="Модель действующего вещества",
+ *     required={"name"},
+ *     @OA\Xml(
+ *         name="Substance"
+ * 	   )
  * )
  */
 class Substance
@@ -30,13 +27,24 @@ class Substance
      * @ORM\Id
      * @ORM\GeneratedValue
      * @ORM\Column(type="integer")
+     * @Groups({"substance:read", "drugs:read"})
+	 * @OA\Property(
+	 *     type="integer",
+	 *     description="ID",
+	 *     title="ID"
+	 * )
      */
     private $id;
 
     /**
      * @ORM\Column(type="string", length=255)
-     * @Groups({"substance:list", "substance:read", "drugs:read"})
-     * @Assert\NotNull()
+     * @Groups({"substance:list", "drugs:read"})
+     * @Assert\NotBlank(message="Name must not be blank")
+	 * @OA\Property(
+	 *     type="string",
+	 *     description="Название действующего вещества",
+	 *     title="Название вещества"
+	 * )
      */
     private $name;
 

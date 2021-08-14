@@ -2,19 +2,21 @@
 
 namespace App\Entity;
 
-use ApiPlatform\Core\Annotation\ApiResource;
 use App\Repository\DrugRepository;
 use Doctrine\ORM\Mapping as ORM;
+use OpenApi\Annotations as OA;
 use Symfony\Component\Serializer\Annotation\Groups;
 use Symfony\Component\Validator\Constraints as Assert;
 
 /**
  * @ORM\Entity(repositoryClass=DrugRepository::class)
- * @ApiResource(
- *     collectionOperations={"get", "post"},
- *     itemOperations={"get", "put", "delete"},
- *     normalizationContext={"groups"={"drugs:read"}},
- *     denormalizationContext={"groups"={"drugs:write"}}
+ * @OA\Schema(
+ *     title="Лекарство",
+ *     description="Модель лекарства",
+ *     required={"name", "price", "substance", "manufacturer"},
+ *     @OA\Xml(
+ *         name="Drug"
+ * 	   )
  * )
  */
 class Drug
@@ -23,37 +25,66 @@ class Drug
      * @ORM\Id
      * @ORM\GeneratedValue
      * @ORM\Column(type="integer")
+     * @Groups({"drugs:read"})
+	 * @OA\Property(
+	 *     type="integer",
+	 *     description="ID",
+	 *     title="ID"
+	 * )
      */
     private $id;
 
     /**
      * @ORM\Column(type="string", length=255)
-     * @Assert\NotBlank()
-     * @Groups({"drugs:read", "drugs:write"})
+     * @Assert\NotBlank(message="Name must not be blank")
+     * @Groups({"drugs:read"})
+	 * @OA\Property(
+	 *     type="string",
+	 *     description="Название лекарства",
+	 *     title="Название лекарственного препарата"
+	 * )
      */
     private $name;
+
+	/**
+	 * @ORM\Column(type="float")
+	 * @Assert\NotBlank(message="Price must not be blank")
+	 * @Assert\GreaterThan(0)
+	 * @Groups({"drugs:read"})
+	 * @OA\Property(
+	 *     type="number",
+	 *     format="float",
+	 *     description="Цена лекарства",
+	 *     title="Цена лекарственного препарата"
+	 * )
+	 */
+	private $price;
 
     /**
      * @ORM\ManyToOne(targetEntity=Substance::class, inversedBy="drugs")
      * @ORM\JoinColumn(nullable=false)
-     * @Groups({"drugs:read", "drugs:write"})
+     * @Groups({"drugs:read"})
+	 * @Assert\NotBlank(message="Substance must not be blank")
+	 * @OA\Property(
+	 *     title="Вещество",
+	 *     description="Действующее вещество в лекарственном препарате"
+	 * )
+	 * @var Substance
      */
     private $substance;
 
     /**
      * @ORM\ManyToOne(targetEntity=Manufacturer::class, inversedBy="drugs")
      * @ORM\JoinColumn(nullable=false)
-     * @Groups({"drugs:read", "drugs:write"})
+     * @Groups({"drugs:read"})
+	 * @Assert\NotBlank(message="Manufacturer must not be blank")
+	 * @OA\Property(
+	 *     title="Производитель",
+	 *     description="Производитель лекарственного препарата"
+	 * )
+	 * @var Manufacturer
      */
     private $manufacturer;
-
-    /**
-     * @ORM\Column(type="float")
-     * @Assert\NotBlank()
-     * @Assert\GreaterThan(0)
-     * @Groups({"drugs:read", "drugs:write"})
-     */
-    private $price;
 
     public function getId(): ?int
     {

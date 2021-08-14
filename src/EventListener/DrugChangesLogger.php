@@ -20,21 +20,42 @@ class DrugChangesLogger
     public function postUpdate(Drug $drug): void
     {
         $this->logger->info('Drug was updated', [
-            'drug' => $this->serializer->serialize($drug, 'json'),
+            'drug' => $this->serializer
+                ->serialize(
+                    $drug,
+                    'json',
+                    [
+                        'groups' => ['drugs:read']
+                    ]
+                ),
         ]);
     }
 
     public function postPersist(Drug $drug): void
     {
         $this->logger->info('Drug was inserted', [
-            'drug' => $this->serializer->serialize($drug, 'json'),
+            'drug' => $this->serializer
+                ->serialize(
+                    $drug,
+                    'json',
+                    [
+                        'groups' => ['drugs:read']
+                    ]
+                ),
         ]);
     }
 
     public function preRemove(Drug $drug): void
     {
         $this->logger->info('Drug was deleted', [
-            'drug' => $this->serializer->serialize($drug, 'json'),
+            'drug' => $this->serializer
+                ->serialize(
+                    $drug,
+                    'json',
+                    [
+                        'groups' => ['drugs:read']
+                    ]
+                ),
         ]);
     }
 }

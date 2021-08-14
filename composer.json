@@ -7,6 +7,7 @@
         "php": ">=7.4",
         "ext-ctype": "*",
         "ext-iconv": "*",
+        "ext-json": "*",
         "api-platform/core": "^2.6",
         "composer/package-versions-deprecated": "1.11.99.2",
         "doctrine/annotations": "^1.0",
@@ -38,7 +39,7 @@
         "symfony/var-dumper": "5.3.*",
         "symfony/web-profiler-bundle": "^5.3",
         "symfony/yaml": "5.3.*",
-      "ext-json": "*"
+        "zircote/swagger-php": "^3.2"
     },
     "config": {
         "optimize-autoloader": true,
@@ -72,7 +73,8 @@
         ],
         "post-update-cmd": [
             "@auto-scripts"
-        ]
+        ],
+        "openapi-create": "./vendor/bin/openapi -o openapi.yaml ./src"
     },
     "conflict": {
         "symfony/symfony": "*"

@@ -1,0 +1,291 @@
+openapi: 3.0.0
+info:
+  title: 'Каталог лекарственных препаратов'
+  description: 'Тестовое задание'
+  version: '1.0'
+servers:
+  -
+    url: /
+paths:
+  /api/drugs:
+    get:
+      tags:
+        - drug
+      summary: 'Получить список всех лекарств'
+      operationId: getDrugsList
+      responses:
+        '200':
+          description: 'Список лекарств'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Drug'
+    post:
+      tags:
+        - drug
+      summary: 'Добавить новое лекарство'
+      operationId: insertDrug
+      requestBody:
+        description: 'Формат данных для добавления лекарства. Все поля обязательны'
+        required: true
+        content:
+          application/json:
+            schema:
+              required:
+                - name
+                - price
+                - manufacturer
+                - substance
+              properties:
+                name:
+                  description: 'Название добавляемого лекарства'
+                  type: string
+                price:
+                  description: 'Название добавляемого лекарства'
+                  type: number
+                  format: float
+                manufacturer:
+                  description: 'ID производителя добавляемого лекарства'
+                  type: integer
+                substance:
+                  description: 'ID производителя действующего вещества'
+                  type: integer
+              type: object
+      responses:
+        '201':
+          description: 'Лекарство успешно добавлено'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Drug'
+        '400':
+          description: 'Invalid input'
+  '/api/drugs/{id}':
+    get:
+      tags:
+        - drug
+      summary: 'Получить определенное лекарство'
+      operationId: getDrugById
+      parameters:
+        -
+          name: id
+          in: path
+          description: 'ID лекарственного препарата'
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Лекарство
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Drug'
+        '404':
+          description: 'Resource not found'
+    put:
+      tags:
+        - drug
+      summary: 'Изменить лекарство'
+      operationId: updateDrug
+      parameters:
+        -
+          name: id
+          in: path
+          description: 'ID редактируемого лекарства'
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        description: 'Формат данных для изменения лекарства. Допускается передача лишь некоторых параметров. Например, для изменения названия лекарства достаточно передать поле `name`, а для изменения цены и действующего вещества нужно передать два поля - `price` и `substance`'
+        required: true
+        content:
+          application/json:
+            schema:
+              properties:
+                name:
+                  description: 'Название добавляемого лекарства'
+                  type: string
+                price:
+                  description: 'Название добавляемого лекарства'
+                  type: number
+                  format: float
+                manufacturer:
+                  description: 'ID производителя добавляемого лекарства'
+                  type: integer
+                substance:
+                  description: 'ID производителя действующего вещества'
+                  type: integer
+              type: object
+      responses:
+        '200':
+          description: 'Лекарство успешно изменено'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Drug'
+        '400':
+          description: 'Invalid input'
+        '404':
+          description: 'Resource not found'
+    delete:
+      tags:
+        - drug
+      summary: 'Удалить лекарство'
+      operationId: deleteDrug
+      parameters:
+        -
+          name: id
+          in: path
+          description: 'ID удаляемого лекарства'
+          required: true
+          schema:
+            type: integer
+      responses:
+        '204':
+          description: 'Лекарство успешно удалено'
+        '404':
+          description: 'Resource not found'
+  /api/manufacturers:
+    get:
+      tags:
+        - manufacturer
+      summary: 'Показать список производителей'
+      operationId: getManufacturersList
+      responses:
+        '200':
+          description: 'Список производителей'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Manufacturer'
+        '404':
+          description: 'Resource not found'
+  /api/substances:
+    get:
+      tags:
+        - substances
+      summary: 'Показать список веществ'
+      operationId: getSubstancesList
+      responses:
+        '200':
+          description: 'Список веществ'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Substance'
+        '404':
+          description: 'Resource not found'
+  /api/login_check:
+    post:
+      tags:
+        - login
+      summary: 'Получить JWT токен'
+      operationId: getJWTToken
+      requestBody:
+        description: 'Получение JWT токена для операций с каталогом лекарств'
+        required: true
+        content:
+          application/json:
+            schema:
+              required:
+                - username
+                - password
+              properties:
+                username:
+                  description: 'Имя пользователя'
+                  type: string
+                  example: user
+                password:
+                  description: Пароль
+                  type: string
+                  format: password
+                  example: password
+              type: object
+      responses:
+        '200':
+          description: 'JWT токен получен'
+          content:
+            application/json:
+              example: '{"token": "eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9.eyJpYXQiOjE2Mjg5NzIxMDUsImV4cCI6MTYyODk3NTcwNSwicm9sZXMiOlsiUk9MRV9VU0VSIl0sInVzZXJuYW1lIjoidXNlciJ9.adXGk3Hq1C1Gue9-cV7WtBSzfsNxugWW7aunE7VKzQe15WE7DR0NfCOtvVR-9OwJM2SwxrghsPzB9HoDRzXuAEByZ6VAQRrw-FmRxn4sT9ujjX79rlB4_CkgZ4NSlDgBJ92dRX7qDn-jVuOQVoQW9D6-LrRW1e4DEhXEJPxvELdadfW9tVy9UbloQ6EHinGsoIvqLRViMk38rqtrqDSRh8nal6BGYF_mvQV43kNHIdfQCGyEaxkhHih5Apna6lun4u8OY3yZkgte_8w-fuFwdD49-kZcQwTY5ifohGqEIM8g07cPfhCjs3SpfR0AEnr4mRE97ZzWlA9-0Nh8ahxm-Q"}'
+        '401':
+          description: 'Invalid credentials'
+components:
+  schemas:
+    Drug:
+      title: Лекарство
+      description: 'Модель лекарства'
+      required:
+        - name
+        - price
+        - substance
+        - manufacturer
+      properties:
+        id:
+          title: ID
+          description: ID
+          type: integer
+        name:
+          title: 'Название лекарственного препарата'
+          description: 'Название лекарства'
+          type: string
+        price:
+          title: 'Цена лекарственного препарата'
+          description: 'Цена лекарства'
+          type: number
+          format: float
+        substance:
+          $ref: '#/components/schemas/Substance'
+        manufacturer:
+          $ref: '#/components/schemas/Manufacturer'
+      type: object
+      xml:
+        name: Drug
+    Manufacturer:
+      title: Производитель
+      description: 'Модель производителя'
+      required:
+        - name
+        - site
+      properties:
+        id:
+          title: ID
+          description: ID
+          type: integer
+        name:
+          title: 'Название производителя'
+          description: 'Название производителя'
+          type: string
+        site:
+          title: 'Сайт производителя'
+          description: 'Сайт производителя'
+          type: string
+      type: object
+      xml:
+        name: Manufacturer
+    Substance:
+      title: 'Действующее вещество'
+      description: 'Модель действующего вещества'
+      required:
+        - name
+      properties:
+        id:
+          title: ID
+          description: ID
+          type: integer
+        name:
+          title: 'Название вещества'
+          description: 'Название действующего вещества'
+          type: string
+      type: object
+      xml:
+        name: Substance
+  securitySchemes:
+    bearerAuth:
+      type: http
+      description: 'JWT токен для запросов'
+      bearerFormat: JWT
+      scheme: bearer
+security:
+  -
+    bearerAuth: []

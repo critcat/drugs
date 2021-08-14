@@ -2,26 +2,23 @@
 
 namespace App\Entity;
 
-use ApiPlatform\Core\Action\NotFoundAction;
-use ApiPlatform\Core\Annotation\ApiResource;
 use App\Repository\ManufacturerRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
+use OpenApi\Annotations as OA;
 use Symfony\Component\Serializer\Annotation\Groups;
 use Symfony\Component\Validator\Constraints as Assert;
 
 /**
  * @ORM\Entity(repositoryClass=ManufacturerRepository::class)
- * @ApiResource(
- *     collectionOperations={"get"},
- *     itemOperations={"get"={
- *          "controller"=NotFoundAction::class,
- *          "read"=false,
- *          "output"=false
- *     }},
- *     normalizationContext={"groups"={"manufacturer:read"}},
- *     order={"name"="ASC"}
+ * @OA\Schema(
+ *     title="Производитель",
+ *     description="Модель производителя",
+ *     required={"name", "site"},
+ *     @OA\Xml(
+ *         name="Manufacturer"
+ * 	   )
  * )
  */
 class Manufacturer
@@ -30,20 +27,36 @@ class Manufacturer
      * @ORM\Id
      * @ORM\GeneratedValue
      * @ORM\Column(type="integer")
+     * @Groups({"manufacturer:read", "drugs:read"})
+	 * @OA\Property(
+	 *     type="integer",
+	 *     description="ID",
+	 *     title="ID"
+	 * )
      */
     private $id;
 
     /**
      * @ORM\Column(type="string", length=255)
      * @Groups({"manufacturer:read", "drugs:read"})
-     * @Assert\NotBlank()
+     * @Assert\NotBlank(message="Name must not be blank")
+	 * @OA\Property(
+	 *     type="string",
+	 *     description="Название производителя",
+	 *     title="Название производителя"
+	 * )
      */
     private $name;
 
     /**
      * @ORM\Column(type="string", length=255)
      * @Groups({"manufacturer:read", "drugs:read"})
-     * @Assert\NotBlank()
+     * @Assert\NotBlank(message="Site must not be blank")
+	 * @OA\Property(
+	 *     type="string",
+	 *     description="Сайт производителя",
+	 *     title="Сайт производителя"
+	 * )
      */
     private $site;
 
