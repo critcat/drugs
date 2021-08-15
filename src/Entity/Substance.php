@@ -38,7 +38,7 @@ class Substance
 
     /**
      * @ORM\Column(type="string", length=255)
-     * @Groups({"substance:list", "drugs:read"})
+     * @Groups({"substance:read", "drugs:read"})
      * @Assert\NotBlank(message="Name must not be blank")
 	 * @OA\Property(
 	 *     type="string",

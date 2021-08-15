@@ -2,20 +2,6 @@
     "api-platform/api-pack": {
         "version": "v1.3.0"
     },
-    "api-platform/core": {
-        "version": "2.5",
-        "recipe": {
-            "repo": "github.com/symfony/recipes",
-            "branch": "master",
-            "version": "2.5",
-            "ref": "f132b33c43cf47b4451d91d2b57057eacb6b8e1d"
-        },
-        "files": [
-            "config/packages/api_platform.yaml",
-            "config/routes/api_platform.yaml",
-            "src/Entity/.gitignore"
-        ]
-    },
     "composer/package-versions-deprecated": {
         "version": "1.11.99.2"
     },
@@ -114,9 +100,6 @@
     "doctrine/sql-formatter": {
         "version": "1.1.1"
     },
-    "fig/link-util": {
-        "version": "1.1.2"
-    },
     "friendsofphp/proxy-manager-lts": {
         "version": "v1.0.5"
     },
@@ -152,18 +135,6 @@
     },
     "namshi/jose": {
         "version": "7.2.3"
-    },
-    "nelmio/cors-bundle": {
-        "version": "1.5",
-        "recipe": {
-            "repo": "github.com/symfony/recipes",
-            "branch": "master",
-            "version": "1.5",
-            "ref": "6bea22e6c564fba3a1391615cada1437d0bde39c"
-        },
-        "files": [
-            "config/packages/nelmio_cors.yaml"
-        ]
     },
     "nikic/php-parser": {
         "version": "v4.12.0"
@@ -222,9 +193,6 @@
         "version": "1.1.1"
     },
     "psr/event-dispatcher": {
-        "version": "1.0.0"
-    },
-    "psr/link": {
         "version": "1.0.0"
     },
     "psr/log": {
@@ -588,9 +556,6 @@
     "symfony/var-exporter": {
         "version": "v5.3.4"
     },
-    "symfony/web-link": {
-        "version": "v5.3.4"
-    },
     "symfony/web-profiler-bundle": {
         "version": "3.3",
         "recipe": {
@@ -616,9 +581,6 @@
     },
     "webmozart/assert": {
         "version": "1.10.0"
-    },
-    "willdurand/negotiation": {
-        "version": "3.0.0"
     },
     "zircote/swagger-php": {
         "version": "3.2.3"
