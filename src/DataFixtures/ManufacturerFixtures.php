@@ -15,7 +15,15 @@ class ManufacturerFixtures extends Fixture
     {
         $faker = Factory::create();
 
-        for ($i = 0; $i < 5; $i++) {
+		$manufacturer = new Manufacturer();
+		$manufacturer->setName('Test Manufacturer');
+		$manufacturer->setSite('https://test-manufacturer.com');
+
+		$manager->persist($manufacturer);
+
+		$this->addReference(self::REFERENCE . '_0', $manufacturer);
+
+        for ($i = 1; $i < 5; $i++) {
             $manufacturer = new Manufacturer();
             $manufacturer->setName($faker->company);
             $manufacturer->setSite('https://' . $faker->domainName);

@@ -17,7 +17,15 @@ class DrugFixtures extends Fixture implements DependentFixtureInterface
     {
         $this->faker = Factory::create();
 
-        for ($i = 0; $i < 10; $i++) {
+		$drug = new Drug();
+		$drug->setName('Test Drug')
+			->setPrice(123.45)
+			->setManufacturer($this->getReference(ManufacturerFixtures::REFERENCE . '_0'))
+			->setSubstance($this->getReference(SubstanceFixtures::REFERENCE . '_0'));
+
+		$manager->persist($drug);
+
+        for ($i = 1; $i < 10; $i++) {
             $drug = new Drug();
             $drug->setName(ucfirst($this->faker->word))
                 ->setPrice($this->faker->randomFloat(2, 5, 1000))
