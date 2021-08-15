@@ -13,6 +13,7 @@
  *     tags={"login"},
  *     summary="Получить JWT токен",
  *     operationId="getJWTToken",
+ *     security={},
  *     @OA\RequestBody(
  *         description="Получение JWT токена для операций с каталогом лекарств",
  *         required=true,

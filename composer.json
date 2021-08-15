@@ -74,7 +74,7 @@
         "post-update-cmd": [
             "@auto-scripts"
         ],
-        "openapi-create": "./vendor/bin/openapi -o openapi.yaml ./src"
+        "openapi-create": "./vendor/bin/openapi --output ./public/openapi.yaml ./src"
     },
     "conflict": {
         "symfony/symfony": "*"
